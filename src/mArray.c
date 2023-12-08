@@ -3,7 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-mArray *new_mArray() {
+mArray *new_mArray()
+{
   mArray *return_mArray;
 
   return_mArray = (mArray *)malloc(sizeof(mArray));
@@ -15,28 +16,65 @@ mArray *new_mArray() {
   return return_mArray;
 }
 
-int expand_mArray(mArray *arr, unsigned int length) {
-  arr->start = realloc(arr->start, sizeof(data) * length);
-  arr->size = length;
+int resize_mArray(mArray *array, unsigned int length)
+{
+  array->start = realloc(array->start, sizeof(data) * length);
+  array->size = length;
 }
 
-int insert_mArray(mArray *arr, unsigned int index, data *toAdd) {
-  expand_mArray(arr, arr->size + 1);
+int insert_mArray(mArray *array, unsigned int index, data *toAdd)
+{
+  resize_mArray(array, array->size + 1);
 
-  memmove(&arr->start[index + 1], &arr->start[index],
-          (arr->size - index) * sizeof(data));
+  memmove(&array->start[index + 1], &array->start[index], (array->size - index) * sizeof(data));
 
-  arr->start[index] = toAdd;
+  array->start[index] = toAdd;
 
   return 1;
 }
 
-data *get_mArray(mArray *arr, unsigned int toGet) { return arr->start[toGet]; };
+int remove_mArray(mArray *array, unsigned int index)
+{
 
-int main() {
-  mArray *arr = new_mArray();
+  memmove(&array->start[index], &array->start[index + 1], (array->size - (index)) * sizeof(data));
+
+  resize_mArray(array, array->size - 1);
+
+  array->size = array->size - 1;
+
+  return 1;
+}
+
+int set_mArray(mArray *array, unsigned int index, data *toAdd)
+{
+  array->start[index] = toAdd;
+
+  return 1;
+};
+
+data *get_mArray(mArray *array, unsigned int toGet) { return array->start[toGet]; };
+
+int free_mArray(mArray *array)
+{
+
+  free(array->start);
+  free(array);
+
+  return 1;
+}
+
+int main()
+{
+  mArray *array = new_mArray();
   char *test = "Hello World";
-  insert_mArray(arr, 0, (data *)test);
+  insert_mArray(array, 0, (data *)test);
   printf("%s\n", test);
-  printf("%s\n", (char *)get_mArray(arr, 0));
+  printf("%s\n", (char *)get_mArray(array, 0));
+
+  char *test2 = "Hello World2";
+  printf("%s\n", test2);
+  set_mArray(array, 0, (data *)test2);
+  printf("%s\n", (char *)get_mArray(array, 0));
+
+  free_mArray(array);
 }
