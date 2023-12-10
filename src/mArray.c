@@ -50,7 +50,7 @@ int set_mArray(mArray *array, unsigned int index, data *toAdd)
   array->start[index] = toAdd;
 
   return 1;
-};
+}
 
 data *get_mArray(mArray *array, unsigned int toGet) { return array->start[toGet]; };
 
